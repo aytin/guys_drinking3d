@@ -1,0 +1,113 @@
+// This is a Processing project in 3-D using opengl library
+// It uses some image files
+//  size(500, 500, P3D);
+import processing.opengl.*;
+ 
+PImage imgTable, imgChair, imgCup, imgCoffee, imgWall;
+
+
+void setup() {
+  size(500, 500, OPENGL);
+  imgTable = loadImage("table.jpg");
+  imgChair = loadImage("chair.jpg");
+  ingWall = loadImage("wall.jpg");
+  noFill();
+}
+
+int zoom = 0;
+int chairSeatHeight      = 100;
+int chairWidth           = 50;
+int chairDepth           = 50;
+int chairBackHeight      = 100;
+int chairFrameThickness  = 10;
+
+void draw() {
+  background(255);
+  translate(width/2, height/2,  zoom);
+  rotateY(map(mouseX, 0, width, -PI, PI));
+  rotateX(map(mouseY, 0, height, -PI, PI));
+  drawTable();
+  box(100,20,100);
+  fill(200,200,200);
+  pushMatrix();
+  translate(width/7, height/12);
+  box(200, 200, 10);
+  fill(150, 150, 150);
+  popMatrix();
+/*
+
+  scrambleChair();
+  drawChair();
+  popMatrix();
+  */
+}
+ 
+
+
+void drawTable()
+{
+  strokeWeight(1);
+  pushMatrix();
+  box(100,20,100);
+  popMatrix();
+  beginShape(QUADS);
+  texture(imgTable);
+  vertex(-100.5, -100.001, 100.5, 0, 0);
+  vertex(-100.5, -100.001, -100.5, imgTable.width, 0);
+  vertex(100.5, -100.001, -100.5, imgTable.width, imgTable.height);
+  vertex(100.5, -100.001, 100.5, 0, imgTable.height);
+  vertex(-100.5, -100.001, 100.5, imgTable.width, imgTable.height);
+  vertex(-100.5, -100.001, -100.5, 0, imgTable.height);
+  endShape();
+}
+
+void drawChair() {
+  // back
+  pushMatrix();
+  translate(chairWidth/2, chairBackHeight/2);
+  box(chairWidth, chairBackHeight, chairFrameThickness);
+  popMatrix();
+
+  // seat
+  pushMatrix();
+  translate(chairWidth/2, chairBackHeight + chairFrameThickness/2, chairDepth/2 - chairFrameThickness/2);
+  box(chairWidth, chairFrameThickness, chairDepth);
+  popMatrix();
+
+
+  // legs
+  pushMatrix();
+  translate(chairFrameThickness/2, chairBackHeight + chairSeatHeight/2 + chairFrameThickness, 0);
+  box(chairFrameThickness, chairSeatHeight, chairFrameThickness);
+  popMatrix();
+
+  pushMatrix();
+  translate(chairWidth - chairFrameThickness/2, chairBackHeight + chairSeatHeight/2 + chairFrameThickness, 0);
+  box(chairFrameThickness, chairSeatHeight, chairFrameThickness);
+  popMatrix();
+
+  pushMatrix();
+  translate(chairWidth - chairFrameThickness/2, chairBackHeight + chairSeatHeight/2 + chairFrameThickness, chairDepth - chairFrameThickness);
+  box(chairFrameThickness, chairSeatHeight, chairFrameThickness);
+  popMatrix();
+
+  pushMatrix();
+  translate(chairFrameThickness/2, chairBackHeight + chairSeatHeight/2 + chairFrameThickness, chairDepth - chairFrameThickness);
+  box(chairFrameThickness, chairSeatHeight, chairFrameThickness);
+  popMatrix();
+}
+
+void scrambleChair() {
+  chairSeatHeight = floor(random(10, 200));
+  chairWidth      = floor(random(10, 200));
+  chairDepth      = floor(random(10, 200));
+  chairBackHeight = floor(random(10, 200));
+}
+
+void keyPressed()
+{
+  if(keyCode == UP)
+    zoom += 70;
+  else if(keyCode == DOWN)
+    zoom -= 70;
+}
